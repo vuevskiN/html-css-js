@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    input{
+        margin: 5px;
+        font-size: 70px;
+    }
+</style>
+<body>
+
+<script>
+    data = '["bukva", "jazik", "misla", "tablo"]';
+    newdata = JSON.parse(data);
+    var random = Math.floor((Math.random() * 4) + 1);
+    var randomword = newdata[random];
+    var count = 0;
+    newinput();
+    console.log(randomword);
+    function newinput(){
+        for(i = 0; i < randomword.length; i++){
+            var element = document.createElement("input");
+            element.style.width = '70px';
+            element.style.height = '70px';
+            element.style.border = 'solid 1px black';
+            element.setAttribute("class",count);
+            element.addEventListener("keydown" , function(e) {
+                if (e.key == "Enter") {
+                    count = 0;
+                    checkInput();
+                }
+            })
+            count++;
+            document.body.appendChild(element);
+        }
+        document.body.appendChild(document.createElement("br"));
+    }
+
+    function checkInput(){
+        var elements = document.getElementsByTagName("input");
+        var seok = true;
+        for(i = 0; i < elements.length; i++){
+            if(elements[i].value.length != 1){
+                seok = false;
+                alert("Se vnesuva samo edna bukva!");
+                return;
+                break;
+            }
+        }
+
+        if(seok == true){
+            checkWord();
+
+        }
+    }
+
+    function checkWord(){
+        var elements = document.getElementsByTagName("input");
+        for(i = 0; i < elements.length; i++){
+            elements[i].setAttribute("disabled",true);
+        }
+
+        var split = randomword.split("");
+        var pogodoci = 0;
+        for(i = 0; i < elements.length; i++){
+            for(j = 0; j < split.length; j++){
+                if(split[j] == elements[i].value && j == elements[i].className){
+                    elements[i].style.backgroundColor = 'green';
+                    pogodoci++;
+                }
+
+                else if(split[j] == elements[i].value && j != elements[i].className){
+                    elements[i].style.backgroundColor = 'yellow';
+                }
+            }
+
+        }
+        if(pogodoci == 5){
+            document.body.style.backgroundColor = 'green';
+        }
+
+        else{
+            newinput();
+            pogodoci = 0;
+        }
+    }
+</script>
+</body>
+</html>

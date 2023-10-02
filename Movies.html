@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/start/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+    <style>
+
+    </style>
+    <script>
+        $(document).ready(function(){
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true,
+                title: "Download complete",
+                buttons:{
+                    OK: function(){
+                        var movie = $("#movie").val();
+
+                        if(movie == ""){
+                            $("#movie").before("<div style='color: red'>Error!</div>")
+                        }
+
+                        else{
+
+                            function getdata(movie){
+                                $.ajax({
+                                    url:"https://www.omdbapi.com/?apikey=a6592a8d&t="+movie,
+                                    dataType:"json",
+                                    success: function(data){
+
+                                        var list_item = $("<li>").append(data.Title);
+                                        list_item.attr("title",data.Title);
+                                        list_item.attr("imdb",data.imdbID);
+                                        list_item.attr("rating",data.imdbRating);
+                                        list_item.attr("director",data.Director);
+                                        list_item.attr("actors",data.Actors);
+                                        list_item.attr("img",data.Poster);
+                                        list_item.appendTo("#list");
+
+                                    }
+                                })
+                            }
+
+                            getdata(movie);
+                            $("#dialog").dialog("close");
+                        }
+                    }
+                }
+            })
+
+            $(document).on("click", "#button", function(){
+                $("#dialog").dialog("open");
+            })
+
+            $(document).on("click", "#list li", function(){
+                $("#title").html($(this).attr("title"));
+                $("#imdb").html($(this).attr("imdb"));
+                $("#rating").html($(this).attr("rating"));
+                $("#directors").html($(this).attr("director"));
+                $("#actors").html($(this).attr("actors"));
+                $("#img").attr("src",$(this).attr("img"));
+            })
+        })
+    </script>
+</head>
+<body>
+<input type="button" id="button" value="Add movie">
+<ul id="list">
+</ul>
+<div>
+    <p>Title: <span id="title"></span></p>
+    <p>ImbdID: <span id="id"></span></p>
+    <p>Rating: <span id="rating"></span></p>
+    <p>Directors: <span id="directors"></span></p>
+    <p>Actors: <span id="actors"></span></p>
+    <img src="" id="img">
+</div>
+
+<div id="dialog">
+    <label>Add a movie:</label>
+    <br>
+    <input type="text" id="movie">
+</div>
+</body>
+</html>

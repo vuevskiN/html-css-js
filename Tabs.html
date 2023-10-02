@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/start/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+    <style>
+        .aditional_info{
+            display: none;
+        }
+
+        #tabs-1, #tabs-2, #tabs-3, #fav{
+            float: left;
+            vertical-align: top;
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+            $("#tabs").tabs();
+            $(document).tooltip();
+            function getdata(year){
+                $.ajax({
+                    url: "http://ergast.com/api/f1/"+year+"/drivers.json",
+                    dataType: "json",
+                    success: function(data){
+                        $.each(data.MRData.DriverTable.Drivers, function(i,item){
+                            var list_item = $("<li>").append(item.givenName);
+                            list_item.append("<div class='aditional_info'>Date of Birth: "+item.dateOfBirth+"<br><a href='"+item.url+"'>Link:</a></div>");
+                            list_item.attr("nationality", item.nationality);
+                            list_item.appendTo("#"+year);
+                        })
+                    }
+                })
+            }
+
+            getdata(2020);
+            getdata(2021);
+            getdata(2022);
+
+            $(document).on("click", "li", function(){
+                $(this).find(".aditional_info").slideToggle();
+            })
+
+            $("#2020, #2021, #2022").sortable({
+                connectWith: "#fav"
+            })
+
+            $("#fav").sortable({
+
+            })
+        })
+    </script>
+</head>
+<body>
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Drivers 2020</a></li>
+        <li><a href="#tabs-2">Drivers 2021</a></li>
+        <li><a href="#tabs-3">Drivers 2022</a></li>
+    </ul>
+
+    <div id="tabs-1">
+        <p>Drivers 2020</p>
+        <ul id="2020">
+
+        </ul>
+    </div>
+
+    <div id="tabs-2">
+        <p>Drivers 2021</p>
+        <ul id="2021">
+
+        </ul>
+    </div>
+
+    <div id="tabs-3">
+        <p>Drivers 2022</p>
+        <ul id="2022">
+
+        </ul>
+    </div>
+
+    <div id="fav">
+        <p>Favorites</p>
+        <ul>
+            <li>Drop items here:</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
